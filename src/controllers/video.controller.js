@@ -218,12 +218,16 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    if (!(videoId)) {
-        throw new ApiError(400,"video id required")
+
+    if (!videoId) {
+        throw new ApiError(400,"video id not found")
     }
+
     const video = await Video.findById(videoId)
-    console.log(video)
-    if(!(video)){
+
+    console.log("Video: ",video)
+
+    if(!video){
         throw new ApiError(400, "Something went worng while fetching the video")
     }
 
