@@ -62,7 +62,7 @@ const updateTweet = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid/Something messied");
     }
 
-    const tweet = Tweet.findByIdAndUpdate(
+    const tweet = await Tweet.findByIdAndUpdate(
         tweetId,
         {
             $set:{
@@ -90,11 +90,11 @@ const deleteTweet = asyncHandler(async (req, res) => {
 
     const tweet = await Tweet.findByIdAndDelete(tweetId);
 
-    if(!tweet) throw new ApiError(500,"can't find tweet")
+    if(!tweet) throw new ApiError(404,"can't find tweet")
     
     res
     .status(200)
-    .json(new ApiResponse(200,"Deleted Succesfully"))
+    .json(new ApiResponce(200,"Deleted Succesfully"))
 })
 
 export {
