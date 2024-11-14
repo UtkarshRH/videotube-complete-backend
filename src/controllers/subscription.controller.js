@@ -38,7 +38,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     const userSubscribedChannel = await Subscription.aggregate([
         {
             $match:{
-                subscriber: channelId
+                channel: new mongoose.Types.ObjectId(channelId)
             }
         },
         {
@@ -46,7 +46,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
                 from: "users",
                 localField:"subscriber",
                 foreignField: "_id",
-                as: "channels",
+                as: "subscribers",
                 pipeline:[
                     {
                         $project:{
@@ -60,16 +60,22 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
         },
         {
             $addFields:{
-                channelDetails : {
-                    $arrayElemAt:["$ownerResult",0],
+                subscriberDetails : {
+                    $arrayElemAt:["$subscribers",0],
                 }
             }
         },
+        {
+            $project:{
+                subscriberDetails:1
+            }
+        }
     ])
 
-    if (!userSubscribedChannel) {
-        throw new ApiError(400,"finding faild")
+    if (!userSubscribedChannel || userSubscribedChannel.length === 0 ) {
+        throw new ApiError(400,"No subscriber found for this channel")
     }
+    console.log("length of userSubscribedChannel : ",userSubscribedChannel.length)
 
     res
     .status(200)
@@ -80,7 +86,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 const getSubscribedChannels = asyncHandler(async (req, res) => {
     const { subscriberId } = req.params
 
-    if (subscriberId) {
+    if (!subscriberId) {
         throw new ApiError(400,"Invalid/Something messie")
     }
     
