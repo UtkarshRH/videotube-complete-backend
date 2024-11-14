@@ -110,7 +110,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     const userSubcribedChannel = await Subscription.aggregate([
         {
             $match:{
-                subscriber :subscriberId,
+                subscriber :req.user._id,
             }
         },
         {
@@ -134,7 +134,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
         {
             $addFields:{
                 channelDetails:{
-                    $arrayElemAt:["$ownerResult",0]
+                    $arrayElemAt:["$channels",0]
                 }
             }
         }
