@@ -75,7 +75,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     if (!userSubscribedChannel || userSubscribedChannel.length === 0 ) {
         throw new ApiError(400,"No subscriber found for this channel")
     }
-    console.log("length of userSubscribedChannel : ",userSubscribedChannel.length)
+    // console.log("length of userSubscribedChannel : ",userSubscribedChannel.length)
 
     res
     .status(200)
