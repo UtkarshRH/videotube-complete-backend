@@ -13,10 +13,27 @@ const toggleSubscription = asyncHandler(async (req, res) => {
         throw new ApiError(400,"Invalid/Something messied");
     }
 
-    const subscribed = await Subscription.create({
-        subscriber : req.user,
+    // this will check if the user is already subscribed to the channel or not 
+    const existingSubscription = await Subscription.findOne({
+        subscriber : req.user._id,
         channel : channelId
     })
+
+    //declared the subscribed variable 
+    let subscribed;
+
+    if (existingSubscription) {
+        // if user is already subscribed to the channel then delete the subscription
+        await Subscription.deleteOne({_id : existingSubscription._id})
+
+        return res.status(200).json(new ApiResponce(200, "Unsubscribe Succesfully"))
+    }else{
+        //if the user is not subscribed to the channel then add the subscription 
+        subscribed = await Subscription.create({
+            subscriber : req.user._id,
+            channel : channelId
+        })
+    }
 
     if (!subscribed) {
         throw new ApiError(400,"Subscribed faild")
@@ -72,7 +89,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
         }
     ])
 
-    if (!userSubscribedChannel || userSubscribedChannel.length === 0 ) {
+    if (!userSubscribedChannel) {
         throw new ApiError(400,"No subscriber found for this channel")
     }
     // console.log("length of userSubscribedChannel : ",userSubscribedChannel.length)
