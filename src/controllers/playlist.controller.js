@@ -1,7 +1,7 @@
 import mongoose, {isValidObjectId} from "mongoose"
 import {Playlist} from "../model/playlist.model.js"
 import {ApiError} from "../utils/ApiError.js"
-import {ApiResponse} from "../utils/ApiResponse.js"
+import {ApiResponce} from "../utils/ApiResponce.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
 const createPlaylist = asyncHandler(async(req,res)=>{
@@ -25,7 +25,7 @@ const createPlaylist = asyncHandler(async(req,res)=>{
 
     res
     .status(200)
-    .json(new ApiResponse(200,playlist,"playlist created succesfully"))
+    .json(new ApiResponce(200,playlist,"playlist created succesfully"))
 })
 
 const getUserPlaylists = asyncHandler(async(req,res)=>{
@@ -44,7 +44,7 @@ const getUserPlaylists = asyncHandler(async(req,res)=>{
 
     res
     .status(200)
-    .json(new ApiResponse(200,getUserPlaylists,"playlist found succesfully"))
+    .json(new ApiResponce(200,getUserPlaylists,"playlist found succesfully"))
 })
 
 const getPlaylistById  = asyncHandler(async(req,res)=>{
@@ -63,7 +63,7 @@ const getPlaylistById  = asyncHandler(async(req,res)=>{
 
     res
     .status(200)
-    .json(new ApiResponse(200,getUserPlaylists,"Success"))
+    .json(new ApiResponce(200,getUserPlaylists,"Success"))
 })
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
@@ -91,7 +91,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 
     res
     .status(200)
-    .json(new ApiResponse(200,videoAdded,"video added"))
+    .json(new ApiResponce(200,videoAdded,"video added"))
 })
 
 const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
@@ -125,7 +125,7 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
 
     res
     .status(200)
-    .json(new ApiResponse(200,playlist,"video removed from playlist"))
+    .json(new ApiResponce(200,playlist,"video removed from playlist"))
 
 })
 
@@ -152,7 +152,7 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 
     res
     .status(200)
-    .json(new ApiResponse(200,playlist,"playlist removed form database!"))
+    .json(new ApiResponce(200,playlist,"playlist removed form database!"))
 })
 
 
@@ -195,7 +195,7 @@ const updatePlaylist = asyncHandler(async (req, res) => {
 
     res
     .status(200)
-    .json(new ApiResponse(200,playlist,"playlist updated succesfully"))
+    .json(new ApiResponce(200,playlist,"playlist updated succesfully"))
 })
 
 export {

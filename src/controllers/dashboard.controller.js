@@ -3,7 +3,7 @@ import {Video} from "../model/video.model.js"
 import {Subscription} from "../model/subscription.model.js"
 import {Like} from "../model/like.model.js"
 import {ApiError} from "../utils/ApiError.js"
-import {ApiResponse} from "../utils/ApiResponse.js"
+import {ApiResponce} from "../utils/ApiResponce.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 import { User } from "../model/user.model.js"
 
@@ -71,7 +71,7 @@ const getChannelStats = asyncHandler(async(req,res)=>{
     
     res
     .status(200)
-    .json(new ApiResponse(200,channelState,"Success"))
+    .json(new ApiResponce(200,channelState,"Success"))
 })
 
 const getChannelVideos = asyncHandler(async(req,res)=>{
@@ -83,7 +83,7 @@ const getChannelVideos = asyncHandler(async(req,res)=>{
 
     res
     .status(200)
-    .json(new ApiError(200,totalVideos,"Success"))
+    .json(new ApiResponce(200,totalVideos,"Success"))
 })
 
 export {

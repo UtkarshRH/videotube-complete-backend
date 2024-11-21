@@ -1,7 +1,7 @@
 import mongoose, {isValidObjectId} from "mongoose"
 import {Like} from "../model/like.model.js"
 import {ApiError} from "../utils/ApiError.js"
-import {ApiResponse} from "../utils/ApiResponse.js"
+import {ApiResponce} from "../utils/ApiResponce.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
 const toggleVideoLike = asyncHandler(async(req,res)=>{
@@ -20,7 +20,7 @@ const toggleVideoLike = asyncHandler(async(req,res)=>{
     }
     res
     .status(200)
-    .json(new ApiResponse(200,like,"success"))
+    .json(new ApiResponce(200,like,"success"))
 })
 
 const toggleCommentLike = asyncHandler(async(req,res)=>{
@@ -40,7 +40,7 @@ const toggleCommentLike = asyncHandler(async(req,res)=>{
 
     res
     .status(200)
-    .json(new ApiResponse(200,like,"you like the comment"))
+    .json(new ApiResponce(200,like,"you like the comment"))
 })
 
 const toggleTweetLike = asyncHandler(async(req,res)=>{
@@ -60,7 +60,7 @@ const toggleTweetLike = asyncHandler(async(req,res)=>{
     }
     res
     .status(200)
-    .json(new ApiResponse(200,like,"Success"))
+    .json(new ApiResponce(200,like,"Success"))
 })
 
 const getLikedVideos = asyncHandler(async(req,res)=>{
@@ -76,7 +76,7 @@ const getLikedVideos = asyncHandler(async(req,res)=>{
 
     res
     .status(200)
-    .json(new ApiResponse(200,allLikedVideo,"Success"))
+    .json(new ApiResponce(200,allLikedVideo,"Success"))
 })
 
 export{
