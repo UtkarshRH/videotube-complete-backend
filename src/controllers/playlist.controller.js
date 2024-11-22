@@ -76,11 +76,11 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const videoAdded = await Playlist.findById(playlistId);
 
     //find you are right owner or not 
-    if (videoAdded.owner !== req.user) {
+    if (videoAdded.owner.toString() !== req.user._id.toString()) {
         throw new ApiError(400,"you are not allowed!")
     }
 
-    videoAdded.videos.push(videoId)
+    await videoAdded.videos.push(videoId)
 
     try {
         await videoAdded.save({ validateBeforeSave: false })
@@ -109,12 +109,12 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     }
 
     //check if the user is owner of the playlist
-    if(playlist.owner !== req.user){
-        throw new ApiError(500,"you are not allowed to remove the video")
+    if(playlist.owner.toString() !== req.user._id.toString()){
+        throw new ApiError(403,"you are not allowed to remove the video")
     }
 
     //remove the video from the playlist video array 
-    playlist.videos = playlist.videos.filter((vid) => vid !== videoId)
+    playlist.videos = playlist.videos.filter((vid) => vid.toString() !== videoId)
 
     try {
         await playlist.save();
@@ -139,16 +139,21 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 
     const playlist = await Playlist.findById(playlistId)
 
-    if (playlist) {
+    if (!playlist) {
         throw new ApiError(400,"playlist not found!")
     }
 
     //check it the user is owner of the playlist
-    if (playlist.owner !== req.user) {
+    if (playlist.owner.toString() !== req.user._id.toString()) {
         throw new ApiError(500,"you are not allowed to delete the playlist")
     }
 
-    await playlist.remove();
+    try {
+        await playlist.deleteOne();
+    } catch (error) {
+        console.error(error);
+        throw new ApiError(500,"Faild to delete the playlist")   
+    }
 
     res
     .status(200)
@@ -158,22 +163,22 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 
 const updatePlaylist = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
-    const {name, description} = req.body
+    const {name, discription} = req.body
     //TODO: update playlist
 
-    if (!playlistId || name || description) {
-        throw new ApiError(400,"playlistId,name and description required!")
+    if (!playlistId || !name || !discription) {
+        throw new ApiError(400,"playlistId, name and description required!")
     }
 
     const playlist = await Playlist.findById(playlistId)
 
-    if (playlist) {
+    if (!playlist) {
         throw new ApiError(404,"playlist not found")
     }
 
     //check if the user is owner or not 
-    if (playlist.owner !== req.user) {
-        throw new ApiError(500,"you are not allowed to update")
+    if (playlist.owner.toString() !== req.user._id.toString()) {
+        throw new ApiError(403,"you are not allowed to update")
     }
 
     //update the playlist property
@@ -182,8 +187,8 @@ const updatePlaylist = asyncHandler(async (req, res) => {
         playlist.name = name
     }
 
-    if (description) {
-        playlist.description = description
+    if (discription) {
+        playlist.discription = discription
     }
 
     try {

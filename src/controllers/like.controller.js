@@ -10,17 +10,29 @@ const toggleVideoLike = asyncHandler(async(req,res)=>{
     if (!videoId) {
         throw new ApiError(400, "video id required!")
     }
-    const like = await Like.create({
+
+    //check if the user has already like the video 
+    const userExtingLike = await Like.findOne({
         video: videoId,
-        owner: req.user,
+        likedBy: req.user._id  //check if the user has already like the video
     })
 
-    if (!like) {
-        throw new ApiError(504,"couldn't create like")
+    if (userExtingLike) {
+        await userExtingLike.deleteOne();
+        res.status(200).json(new ApiResponce(200, "Video unlike succesfully"))
+    }else{
+        const like = await Like.create({
+            video: videoId,
+            likedBy: req.user._id,
+        })
+        
+        if (!like) {
+            throw new ApiError(504,"couldn't create like")
+        }
+        res
+        .status(200)
+        .json(new ApiResponce(200,like,"success"))
     }
-    res
-    .status(200)
-    .json(new ApiResponce(200,like,"success"))
 })
 
 const toggleCommentLike = asyncHandler(async(req,res)=>{
@@ -68,10 +80,13 @@ const getLikedVideos = asyncHandler(async(req,res)=>{
     const { page = 1, limit = 10 } = req.query;
     const parsedLimit = parseInt(limit)
     const pageSkip = (page - 1) * parsedLimit;
-    const allLikedVideo = await Like.find({video:req.user._id}).skip(pageSkip).limit(parsedLimit)
+    const allLikedVideo = await Like.find({likedBy: req.user._id})
+                                    .skip(pageSkip)
+                                    .limit(parsedLimit)
+                                    .populate('video');
 
-    if (!allLikedVideo) {
-        throw new ApiError(504, "Couldn't find likes video")
+    if (allLikedVideo.length === 0) {
+        return res.status(200).json(new ApiResponce(200, [], "No liked videos found"));
     }
 
     res
